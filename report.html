@@ -9,6 +9,14 @@
             width: 600px;
             margin: 0 auto;
         }
+        .filter-section {
+            margin-bottom: 20px;
+        }
+        .filter-section select, .filter-section input {
+            padding: 8px;
+            margin: 5px 10px;
+            width: 150px;
+        }
         .class-section {
             margin-bottom: 20px;
         }
@@ -42,6 +50,31 @@
 <body>
     <div class="container">
         <h1>Report</h1>
+
+        <!-- 필터 섹션 -->
+        <div class="filter-section">
+            <label for="name-filter">Name:</label>
+            <select id="name-filter">
+                <option value="">All</option>
+                <option value="Sunny">Sunny</option>
+                <option value="Dan">Dan</option>
+                <option value="Adela">Adela</option>
+            </select>
+
+            <label for="date-filter">Date:</label>
+            <input type="date" id="date-filter">
+
+            <label for="class-filter">Class:</label>
+            <select id="class-filter">
+                <option value="">All</option>
+                <option value="Class 1">Class 1</option>
+                <option value="Class 2">Class 2</option>
+                <option value="Class 3">Class 3</option>
+            </select>
+
+            <button id="apply-filters">Apply Filters</button>
+        </div>
+
         <div id="class-container"></div>
     </div>
 
@@ -49,100 +82,76 @@
         // 페이지 로드 시 localStorage에서 데이터를 읽어와 표시하는 함수
         window.onload = function() {
             const classContainer = document.getElementById("class-container");
+            const applyFiltersButton = document.getElementById("apply-filters");
+
             const classes = ["Class 1", "Class 2", "Class 3"]; // Class 이름 배열
 
-            // 페이지 상태 관리
-            let currentPage = 1;
-            let pageSize = 10;
+            // 필터 적용 버튼 클릭 시 데이터 필터링
+            applyFiltersButton.addEventListener("click", function() {
+                const nameFilter = document.getElementById("name-filter").value;
+                const dateFilter = document.getElementById("date-filter").value;
+                const classFilter = document.getElementById("class-filter").value;
 
-            // 각 클래스를 클릭할 수 있도록 만들기
-            classes.forEach(function(className) {
-                const classTitle = document.createElement("h3");
-                classTitle.textContent = className;
-                classTitle.addEventListener("click", function() {
-                    displayClassData(className, currentPage, pageSize);
+                // 페이지 초기화
+                classContainer.innerHTML = "";
+
+                // 각 클래스를 클릭할 수 있도록 만들기
+                classes.forEach(function(className) {
+                    const classTitle = document.createElement("h3");
+                    classTitle.textContent = className;
+                    classTitle.addEventListener("click", function() {
+                        displayClassData(className, nameFilter, dateFilter, classFilter);
+                    });
+                    classContainer.appendChild(classTitle);
                 });
-                classContainer.appendChild(classTitle);
             });
 
-            // 클래스 데이터를 표시하는 함수
-            function displayClassData(className, page, size) {
-                const classData = JSON.parse(localStorage.getItem(className)) || [];
+            // 클래스 데이터를 필터링하여 표시하는 함수
+            function displayClassData(className, nameFilter, dateFilter, classFilter) {
+                let classData = JSON.parse(localStorage.getItem(className)) || [];
+                
+                // 필터 적용
+                if (nameFilter) {
+                    classData = classData.filter(item => item.name === nameFilter);
+                }
+                if (dateFilter) {
+                    classData = classData.filter(item => item.date === dateFilter);
+                }
+                if (classFilter) {
+                    classData = classData.filter(item => item.class === classFilter);
+                }
+
                 classData.sort((a, b) => new Date(b.date) - new Date(a.date)); // 날짜 기준 내림차순 정렬
 
-                // 페이지에 보여줄 데이터 계산
-                const start = (page - 1) * size;
-                const end = page * size;
-                const paginatedData = classData.slice(start, end);
-
-                // 기존 데이터를 초기화하고 새로 추가
+                // 데이터 표시
                 classContainer.innerHTML = "";
                 const classTitle = document.createElement("h3");
                 classTitle.textContent = className;
-                classTitle.addEventListener("click", function() {
-                    displayClassData(className, currentPage, pageSize);
-                });
                 classContainer.appendChild(classTitle);
 
-                // 클래스 데이터 출력
-                if (paginatedData.length > 0) {
-                    paginatedData.forEach(function(data) {
+                if (classData.length > 0) {
+                    classData.forEach(function(data) {
                         const commentItem = document.createElement("div");
                         commentItem.classList.add("comment-item");
                         commentItem.innerHTML = `<strong>${data.name} (${data.date}):</strong><p>${data.comment}</p>`;
                         classContainer.appendChild(commentItem);
                     });
-
-                    // 페이지네이션 버튼 추가
-                    addPaginationButtons(classData.length, page, size);
                 } else {
                     const noDataMessage = document.createElement("p");
-                    noDataMessage.textContent = "저장된 데이터가 없습니다.";
+                    noDataMessage.textContent = "조건에 맞는 데이터가 없습니다.";
                     classContainer.appendChild(noDataMessage);
                 }
             }
 
-            // 페이지네이션 버튼 추가하는 함수
-            function addPaginationButtons(totalItems, currentPage, pageSize) {
-                const pageCount = Math.ceil(totalItems / pageSize);
-                const pagination = document.createElement("div");
-                pagination.classList.add("pagination");
-
-                // 이전 페이지 버튼
-                if (currentPage > 1) {
-                    const prevButton = document.createElement("button");
-                    prevButton.classList.add("page-button");
-                    prevButton.textContent = "이전";
-                    prevButton.addEventListener("click", function() {
-                        displayClassData(className, currentPage - 1, pageSize);
-                    });
-                    pagination.appendChild(prevButton);
-                }
-
-                // 페이지 버튼
-                for (let i = 1; i <= pageCount; i++) {
-                    const pageButton = document.createElement("button");
-                    pageButton.classList.add("page-button");
-                    pageButton.textContent = i;
-                    pageButton.addEventListener("click", function() {
-                        displayClassData(className, i, pageSize);
-                    });
-                    pagination.appendChild(pageButton);
-                }
-
-                // 다음 페이지 버튼
-                if (currentPage < pageCount) {
-                    const nextButton = document.createElement("button");
-                    nextButton.classList.add("page-button");
-                    nextButton.textContent = "다음";
-                    nextButton.addEventListener("click", function() {
-                        displayClassData(className, currentPage + 1, pageSize);
-                    });
-                    pagination.appendChild(nextButton);
-                }
-
-                classContainer.appendChild(pagination);
-            }
+            // 페이지 로드 시, 초기 데이터를 표시
+            classes.forEach(function(className) {
+                const classTitle = document.createElement("h3");
+                classTitle.textContent = className;
+                classTitle.addEventListener("click", function() {
+                    displayClassData(className, "", "", "");
+                });
+                classContainer.appendChild(classTitle);
+            });
         };
     </script>
 </body>
