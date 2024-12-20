@@ -24,6 +24,16 @@
             background-color: lightblue;
             padding: 10px;
             cursor: pointer;
+            margin: 0;
+        }
+        .class-section h3:hover {
+            background-color: lightgreen; /* 마우스를 올렸을 때 색상 변경 */
+        }
+        .class-section .comments {
+            padding: 10px;
+            background-color: lightgray;
+            margin-top: 5px;
+            display: none; /* 기본적으로 숨김 */
         }
         .comment-item {
             padding: 10px;
@@ -100,16 +110,16 @@
                     const classTitle = document.createElement("h3");
                     classTitle.textContent = className;
                     classTitle.addEventListener("click", function() {
-                        displayClassData(className, nameFilter, dateFilter, classFilter);
+                        toggleClassData(className, nameFilter, dateFilter, classFilter, classTitle);
                     });
                     classContainer.appendChild(classTitle);
                 });
             });
 
             // 클래스 데이터를 필터링하여 표시하는 함수
-            function displayClassData(className, nameFilter, dateFilter, classFilter) {
+            function toggleClassData(className, nameFilter, dateFilter, classFilter, classTitle) {
                 let classData = JSON.parse(localStorage.getItem(className)) || [];
-                
+
                 // 필터 적용
                 if (nameFilter) {
                     classData = classData.filter(item => item.name === nameFilter);
@@ -124,22 +134,31 @@
                 classData.sort((a, b) => new Date(b.date) - new Date(a.date)); // 날짜 기준 내림차순 정렬
 
                 // 데이터 표시
-                classContainer.innerHTML = "";
-                const classTitle = document.createElement("h3");
-                classTitle.textContent = className;
-                classContainer.appendChild(classTitle);
+                let commentsSection = classTitle.nextElementSibling;
 
-                if (classData.length > 0) {
-                    classData.forEach(function(data) {
-                        const commentItem = document.createElement("div");
-                        commentItem.classList.add("comment-item");
-                        commentItem.innerHTML = `<strong>${data.name} (${data.date}):</strong><p>${data.comment}</p>`;
-                        classContainer.appendChild(commentItem);
-                    });
+                if (!commentsSection || !commentsSection.classList.contains('comments')) {
+                    commentsSection = document.createElement("div");
+                    commentsSection.classList.add('comments');
+                    classTitle.parentElement.appendChild(commentsSection);
+                }
+
+                if (commentsSection.style.display === 'block') {
+                    commentsSection.style.display = 'none'; // 클릭 시 축소
                 } else {
-                    const noDataMessage = document.createElement("p");
-                    noDataMessage.textContent = "조건에 맞는 데이터가 없습니다.";
-                    classContainer.appendChild(noDataMessage);
+                    commentsSection.style.display = 'block'; // 클릭 시 확장
+                    commentsSection.innerHTML = ''; // 이전 데이터 제거
+                    if (classData.length > 0) {
+                        classData.forEach(function(data) {
+                            const commentItem = document.createElement("div");
+                            commentItem.classList.add("comment-item");
+                            commentItem.innerHTML = `<strong>${data.name} (${data.date}):</strong><p>${data.comment}</p>`;
+                            commentsSection.appendChild(commentItem);
+                        });
+                    } else {
+                        const noDataMessage = document.createElement("p");
+                        noDataMessage.textContent = "조건에 맞는 데이터가 없습니다.";
+                        commentsSection.appendChild(noDataMessage);
+                    }
                 }
             }
 
@@ -148,7 +167,7 @@
                 const classTitle = document.createElement("h3");
                 classTitle.textContent = className;
                 classTitle.addEventListener("click", function() {
-                    displayClassData(className, "", "", "");
+                    toggleClassData(className, "", "", "");
                 });
                 classContainer.appendChild(classTitle);
             });
