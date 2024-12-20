@@ -4,44 +4,69 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Report</title>
-    <link rel="stylesheet" href="styles.css">
+    <style>
+        .container {
+            width: 600px;
+            margin: 0 auto;
+        }
+        .class-section {
+            margin-bottom: 20px;
+        }
+        .class-section h3 {
+            background-color: lightblue;
+            padding: 10px;
+        }
+        .comment-item {
+            padding: 10px;
+            background-color: lightgray;
+            margin-top: 5px;
+        }
+    </style>
 </head>
 <body>
-    <h1>Submitted Reports</h1>
-
-    <div id="classReports">
-        <div id="class1">
-            <h2>Class 1</h2>
-            <ul></ul>
-        </div>
-        <div id="class2">
-            <h2>Class 2</h2>
-            <ul></ul>
-        </div>
-        <div id="class3">
-            <h2>Class 3</h2>
-            <ul></ul>
-        </div>
+    <div class="container">
+        <h1>Report</h1>
+        <div id="class-container"></div>
     </div>
 
     <script>
-        // 각 클래스에서 저장된 코멘트를 불러와서 목록에 추가
-        function displayReports(className) {
-            const classData = JSON.parse(localStorage.getItem(className));
-            if (classData) {
-                const ul = document.getElementById(className.toLowerCase()).getElementsByTagName("ul")[0];
-                classData.forEach(data => {
-                    const li = document.createElement("li");
-                    li.textContent = `Name: ${data.name}, Date: ${data.date}, Comment: ${data.comment}`;
-                    ul.appendChild(li);
-                });
-            }
-        }
+        // 페이지 로드 시 localStorage에서 데이터를 읽어와 표시하는 함수
+        window.onload = function() {
+            const classContainer = document.getElementById("class-container");
+            const classes = ["Class 1", "Class 2", "Class 3"];
 
-        // 각 클래스를 화면에 표시
-        displayReports("Class 1");
-        displayReports("Class 2");
-        displayReports("Class 3");
+            classes.forEach(function(className) {
+                // 각 Class에 해당하는 데이터 불러오기
+                const classData = JSON.parse(localStorage.getItem(className)) || [];
+                
+                if (classData.length > 0) {
+                    // 각 Class 섹션 만들기
+                    const classSection = document.createElement("div");
+                    classSection.classList.add("class-section");
+
+                    const classTitle = document.createElement("h3");
+                    classTitle.textContent = className;
+                    classSection.appendChild(classTitle);
+
+                    // 각 Class에 해당하는 코멘트 목록 만들기
+                    classData.forEach(function(data) {
+                        const commentItem = document.createElement("div");
+                        commentItem.classList.add("comment-item");
+                        commentItem.innerHTML = `<strong>${data.name} (${data.date}):</strong><p>${data.comment}</p>`;
+                        classSection.appendChild(commentItem);
+                    });
+
+                    // 해당 Class 섹션을 페이지에 추가
+                    classContainer.appendChild(classSection);
+                }
+            });
+
+            if (classContainer.children.length === 0) {
+                const noDataMessage = document.createElement("p");
+                noDataMessage.textContent = "저장된 데이터가 없습니다.";
+                classContainer.appendChild(noDataMessage);
+            }
+        };
     </script>
 </body>
 </html>
