@@ -33,13 +33,16 @@
         // 페이지 로드 시 localStorage에서 데이터를 읽어와 표시하는 함수
         window.onload = function() {
             const classContainer = document.getElementById("class-container");
-            const classes = ["Class 1", "Class 2", "Class 3"];
+            const classes = ["Class 1", "Class 2", "Class 3"]; // Class 이름 배열
+
+            let hasData = false; // 데이터가 있는지 확인할 변수
 
             classes.forEach(function(className) {
                 // 각 Class에 해당하는 데이터 불러오기
                 const classData = JSON.parse(localStorage.getItem(className)) || [];
                 
                 if (classData.length > 0) {
+                    hasData = true; // 데이터가 있을 때
                     // 각 Class 섹션 만들기
                     const classSection = document.createElement("div");
                     classSection.classList.add("class-section");
@@ -61,7 +64,8 @@
                 }
             });
 
-            if (classContainer.children.length === 0) {
+            // 데이터가 없을 때 메시지 표시
+            if (!hasData) {
                 const noDataMessage = document.createElement("p");
                 noDataMessage.textContent = "저장된 데이터가 없습니다.";
                 classContainer.appendChild(noDataMessage);
