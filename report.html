@@ -68,7 +68,7 @@
             // 클래스 데이터를 표시하는 함수
             function displayClassData(className, page, size) {
                 const classData = JSON.parse(localStorage.getItem(className)) || [];
-                classData.sort((a, b) => new Date(b.date) - new Date(a.date)); // 최신 날짜부터 정렬
+                classData.sort((a, b) => new Date(b.date) - new Date(a.date)); // 날짜 기준 내림차순 정렬
 
                 // 페이지에 보여줄 데이터 계산
                 const start = (page - 1) * size;
