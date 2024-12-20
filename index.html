@@ -1,182 +1,159 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Form Example</title>
+    <title>폼 작성 페이지</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            background-color: #f4f4f9;
+        .form-container {
+            width: 600px;
+            margin: 0 auto;
         }
-        .container {
-            width: 400px;
-            border: 2px solid #000;
-            padding: 20px;
-            background-color: #fff;
-        }
-        .header {
-            display: flex;
-            justify-content: space-between;
+
+        /* 각 form 요소에 대한 기본 스타일 */
+        .form-section {
             margin-bottom: 20px;
+            display: flex; /* flexbox 사용 */
+            align-items: center; /* 세로로 중앙 정렬 */
+            justify-content: flex-start; /* 요소가 왼쪽에 정렬되도록 설정 */
         }
-        .header div {
-            display: flex;
-            flex-direction: column;
-        }
-        .header input {
-            margin-top: 5px;
-            padding: 5px;
-            border: 1px solid #000;
+
+        /* Class select와 Comment textarea를 한 줄에 맞추기 */
+        .form-section label {
             width: 100px;
         }
-        .content {
-            border: 2px solid #000;
-            padding: 10px;
+
+        .form-section select,
+        .form-section textarea {
+            width: 150px; /* Class 입력란 크기 줄이기 */
+            height: 40px;
+            margin: 5px 0;
         }
-        .row {
-            display: flex;
-            align-items: center;
-            margin-bottom: 10px;
+
+        .form-section textarea {
+            width: 350px; /* Comment 입력란의 너비 */
         }
-        .row .option {
-            margin-right: 10px;
-        }
-        .row select {
-            width: 60px;
-            height: 30px;
-            border: 1px solid #000;
-        }
-        .row .description {
-            flex: 1;
-        }
-        .row .description input {
-            width: 100%;
-            height: 20px;
-            border: 1px solid #000;
-            padding: 5px;
-        }
-        .submit-container {
-            text-align: center;
-            margin-top: 20px;
-        }
-        .submit-container button {
-            padding: 10px 20px;
+
+        .form-container button {
+            width: 150px;
+            height: 40px;
+            background-color: lightblue;
             border: none;
-            background-color: #007BFF;
-            color: white;
             cursor: pointer;
-            font-size: 16px;
+            margin-top: 10px;
         }
-        .submit-container button:hover {
-            background-color: #0056b3;
-        }
-        .result {
-            margin-top: 20px;
-            padding: 10px;
-            border: 1px solid #000;
-            display: none;
+
+        .form-container button:hover {
+            background-color: lightgreen;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <div>
-                <label for="name">Name</label>
-                <input type="text" id="name" name="name">
+    <div class="form-container">
+        <h1>Daily report</h1>
+        <form id="infoForm">
+            <label for="name">Name:</label>
+            <select id="Name" style="width: 150px; height: 40px; background-color: lightblue;">
+                <option value="Sunny">Sunny</option>
+                <option value="Dan">Dan</option>
+                <option value="Adela">Adela</option>
+            </select>
+
+            <label for="date">Date:</label>
+            <input type="date" id="date" required style="width: 150px; height: 40px; background-color: pink;">
+    
+            <br><br>
+            
+            <!-- 동적으로 Class와 Comment 추가할 부분 -->
+            <div id="class-section">
+                <!-- 동적으로 추가되는 입력란들이 여기에 삽입됩니다. -->
             </div>
-            <div>
-                <label for="date">Date</label>
-                <input type="date" id="date" name="date">
-            </div>
-        </div>
-        <div class="content">
-            <div class="row">
-                <div class="option">
-                    <select>
-                        <option value="Option 1">Option 1</option>
-                        <option value="Option 2">Option 2</option>
-                        <option value="Option 3">Option 3</option>
-                        <option value="Option 4">Option 4</option>
-                    </select>
-                </div>
-                <div class="description">
-                    <input type="text" placeholder="Enter description">
-                </div>
-            </div>
-            <div class="row">
-                <div class="option">
-                    <select>
-                        <option value="Option 1">Option 1</option>
-                        <option value="Option 2">Option 2</option>
-                        <option value="Option 3">Option 3</option>
-                        <option value="Option 4">Option 4</option>
-                    </select>
-                </div>
-                <div class="description">
-                    <input type="text" placeholder="Enter description">
-                </div>
-            </div>
-            <div class="row">
-                <div class="option">
-                    <select>
-                        <option value="Option 1">Option 1</option>
-                        <option value="Option 2">Option 2</option>
-                        <option value="Option 3">Option 3</option>
-                        <option value="Option 4">Option 4</option>
-                    </select>
-                </div>
-                <div class="description">
-                    <input type="text" placeholder="Enter description">
-                </div>
-            </div>
-            <div class="row">
-                <div class="option">
-                    <select>
-                        <option value="Option 1">Option 1</option>
-                        <option value="Option 2">Option 2</option>
-                        <option value="Option 3">Option 3</option>
-                        <option value="Option 4">Option 4</option>
-                    </select>
-                </div>
-                <div class="description">
-                    <input type="text" placeholder="Enter description">
-                </div>
-            </div>
-        </div>
-        <div class="submit-container">
-            <button onclick="handleSubmit()">Submit</button>
-        </div>
-        <div class="result" id="result">
-            <h3>Submitted Data:</h3>
-            <p id="resultContent"></p>
-        </div>
+
+            <button type="button" id="addClassButton">추가</button>
+            <br><br>
+            <button type="submit">Submit</button>
+        </form>
     </div>
 
     <script>
-        function handleSubmit() {
-            const name = document.getElementById('name').value;
-            const date = document.getElementById('date').value;
-            const rows = document.querySelectorAll('.row');
-            const resultContent = document.getElementById('resultContent');
-            
-            let result = `Name: ${name}<br>Date: ${date}<br><br>`;
-            rows.forEach((row, index) => {
-                const option = row.querySelector('select').value;
-                const description = row.querySelector('.description input').value;
-                result += `Row ${index + 1}: Option - ${option}, Description - ${description}<br>`;
+        // "추가" 버튼 클릭 시 새로운 Class와 Comment 입력란을 생성하는 함수
+        document.getElementById("addClassButton").addEventListener("click", function() {
+            const section = document.getElementById("class-section");
+
+            // 새로운 섹션을 만들어 Class와 Comment 입력란을 추가합니다.
+            const newSection = document.createElement("div");
+            newSection.classList.add("form-section");
+
+            const classLabel = document.createElement("label");
+            classLabel.textContent = "Class:";
+            newSection.appendChild(classLabel);
+
+            const selectClass = document.createElement("select");
+            selectClass.style.width = "150px";  // Class 선택란의 크기를 1/3로 줄임
+            selectClass.style.height = "40px";
+            const option1 = document.createElement("option");
+            option1.value = "Class 1";
+            option1.textContent = "Class 1";
+            const option2 = document.createElement("option");
+            option2.value = "Class 2";
+            option2.textContent = "Class 2";
+            const option3 = document.createElement("option");
+            option3.value = "Class 3";
+            option3.textContent = "Class 3";
+            selectClass.appendChild(option1);
+            selectClass.appendChild(option2);
+            selectClass.appendChild(option3);
+            newSection.appendChild(selectClass);
+
+            const commentLabel = document.createElement("label");
+            commentLabel.textContent = "Comment:";
+            newSection.appendChild(commentLabel);
+
+            const textarea = document.createElement("textarea");
+            textarea.style.width = "350px";
+            textarea.style.height = "40px";
+            textarea.placeholder = "코멘트를 작성하세요";
+            newSection.appendChild(textarea);
+
+            // 새로운 섹션을 form에 추가
+            section.appendChild(newSection);
+        });
+
+        // 폼 제출 시 로컬 스토리지에 저장하고 새로운 페이지로 이동
+        document.getElementById("infoForm").addEventListener("submit", function(event) {
+            event.preventDefault(); // 폼 제출을 방지
+
+            // Name과 Date 값 가져오기
+            const name = document.getElementById("Name").value;
+            const date = document.getElementById("date").value;
+
+            // 모든 동적 추가된 Class와 Comment 값을 저장
+            const formData = [];
+            const sections = document.querySelectorAll(".form-section");
+
+            sections.forEach(function(section) {
+                const selectClass = section.querySelector("select").value;
+                const comment = section.querySelector("textarea").value;
+
+                if (comment) {
+                    formData.push({ class: selectClass, comment: comment });
+                }
             });
 
-            resultContent.innerHTML = result;
-            document.getElementById('result').style.display = 'block';
-        }
+            // 로컬 스토리지에 저장
+            formData.forEach(data => {
+                if (!localStorage.getItem(data.class)) {
+                    localStorage.setItem(data.class, JSON.stringify([])); // 클래스 초기화
+                }
+
+                let classData = JSON.parse(localStorage.getItem(data.class));
+                classData.push({ name: name, date: date, comment: data.comment }); // 새로운 데이터 추가
+                localStorage.setItem(data.class, JSON.stringify(classData)); // 다시 저장
+            });
+
+            // 새로운 페이지로 이동
+            window.location.href = "report.html"; // report.html 페이지로 이동
+        });
     </script>
 </body>
 </html>
