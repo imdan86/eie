@@ -15,11 +15,27 @@
         .class-section h3 {
             background-color: lightblue;
             padding: 10px;
+            cursor: pointer;
         }
         .comment-item {
             padding: 10px;
             background-color: lightgray;
             margin-top: 5px;
+        }
+        .pagination {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+        .page-button {
+            margin: 0 5px;
+            padding: 5px 10px;
+            cursor: pointer;
+            background-color: lightblue;
+            border: 1px solid #ddd;
+        }
+        .page-button:hover {
+            background-color: #ccc;
         }
     </style>
 </head>
@@ -35,40 +51,97 @@
             const classContainer = document.getElementById("class-container");
             const classes = ["Class 1", "Class 2", "Class 3"]; // Class 이름 배열
 
-            let hasData = false; // 데이터가 있는지 확인할 변수
+            // 페이지 상태 관리
+            let currentPage = 1;
+            let pageSize = 10;
 
+            // 각 클래스를 클릭할 수 있도록 만들기
             classes.forEach(function(className) {
-                // 각 Class에 해당하는 데이터 불러오기
+                const classTitle = document.createElement("h3");
+                classTitle.textContent = className;
+                classTitle.addEventListener("click", function() {
+                    displayClassData(className, currentPage, pageSize);
+                });
+                classContainer.appendChild(classTitle);
+            });
+
+            // 클래스 데이터를 표시하는 함수
+            function displayClassData(className, page, size) {
                 const classData = JSON.parse(localStorage.getItem(className)) || [];
-                
-                if (classData.length > 0) {
-                    hasData = true; // 데이터가 있을 때
-                    // 각 Class 섹션 만들기
-                    const classSection = document.createElement("div");
-                    classSection.classList.add("class-section");
+                classData.sort((a, b) => new Date(b.date) - new Date(a.date)); // 최신 날짜부터 정렬
 
-                    const classTitle = document.createElement("h3");
-                    classTitle.textContent = className;
-                    classSection.appendChild(classTitle);
+                // 페이지에 보여줄 데이터 계산
+                const start = (page - 1) * size;
+                const end = page * size;
+                const paginatedData = classData.slice(start, end);
 
-                    // 각 Class에 해당하는 코멘트 목록 만들기
-                    classData.forEach(function(data) {
+                // 기존 데이터를 초기화하고 새로 추가
+                classContainer.innerHTML = "";
+                const classTitle = document.createElement("h3");
+                classTitle.textContent = className;
+                classTitle.addEventListener("click", function() {
+                    displayClassData(className, currentPage, pageSize);
+                });
+                classContainer.appendChild(classTitle);
+
+                // 클래스 데이터 출력
+                if (paginatedData.length > 0) {
+                    paginatedData.forEach(function(data) {
                         const commentItem = document.createElement("div");
                         commentItem.classList.add("comment-item");
                         commentItem.innerHTML = `<strong>${data.name} (${data.date}):</strong><p>${data.comment}</p>`;
-                        classSection.appendChild(commentItem);
+                        classContainer.appendChild(commentItem);
                     });
 
-                    // 해당 Class 섹션을 페이지에 추가
-                    classContainer.appendChild(classSection);
+                    // 페이지네이션 버튼 추가
+                    addPaginationButtons(classData.length, page, size);
+                } else {
+                    const noDataMessage = document.createElement("p");
+                    noDataMessage.textContent = "저장된 데이터가 없습니다.";
+                    classContainer.appendChild(noDataMessage);
                 }
-            });
+            }
 
-            // 데이터가 없을 때 메시지 표시
-            if (!hasData) {
-                const noDataMessage = document.createElement("p");
-                noDataMessage.textContent = "저장된 데이터가 없습니다.";
-                classContainer.appendChild(noDataMessage);
+            // 페이지네이션 버튼 추가하는 함수
+            function addPaginationButtons(totalItems, currentPage, pageSize) {
+                const pageCount = Math.ceil(totalItems / pageSize);
+                const pagination = document.createElement("div");
+                pagination.classList.add("pagination");
+
+                // 이전 페이지 버튼
+                if (currentPage > 1) {
+                    const prevButton = document.createElement("button");
+                    prevButton.classList.add("page-button");
+                    prevButton.textContent = "이전";
+                    prevButton.addEventListener("click", function() {
+                        displayClassData(className, currentPage - 1, pageSize);
+                    });
+                    pagination.appendChild(prevButton);
+                }
+
+                // 페이지 버튼
+                for (let i = 1; i <= pageCount; i++) {
+                    const pageButton = document.createElement("button");
+                    pageButton.classList.add("page-button");
+                    pageButton.textContent = i;
+                    pageButton.addEventListener("click", function() {
+                        displayClassData(className, i, pageSize);
+                    });
+                    pagination.appendChild(pageButton);
+                }
+
+                // 다음 페이지 버튼
+                if (currentPage < pageCount) {
+                    const nextButton = document.createElement("button");
+                    nextButton.classList.add("page-button");
+                    nextButton.textContent = "다음";
+                    nextButton.addEventListener("click", function() {
+                        displayClassData(className, currentPage + 1, pageSize);
+                    });
+                    pagination.appendChild(nextButton);
+                }
+
+                classContainer.appendChild(pagination);
             }
         };
     </script>
