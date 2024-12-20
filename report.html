@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Report</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <h1>Submitted Reports</h1>
+
+    <div id="classReports">
+        <div id="class1">
+            <h2>Class 1</h2>
+            <ul></ul>
+        </div>
+        <div id="class2">
+            <h2>Class 2</h2>
+            <ul></ul>
+        </div>
+        <div id="class3">
+            <h2>Class 3</h2>
+            <ul></ul>
+        </div>
+    </div>
+
+    <script>
+        // 각 클래스에서 저장된 코멘트를 불러와서 목록에 추가
+        function displayReports(className) {
+            const classData = JSON.parse(localStorage.getItem(className));
+            if (classData) {
+                const ul = document.getElementById(className.toLowerCase()).getElementsByTagName("ul")[0];
+                classData.forEach(data => {
+                    const li = document.createElement("li");
+                    li.textContent = `Name: ${data.name}, Date: ${data.date}, Comment: ${data.comment}`;
+                    ul.appendChild(li);
+                });
+            }
+        }
+
+        // 각 클래스를 화면에 표시
+        displayReports("Class 1");
+        displayReports("Class 2");
+        displayReports("Class 3");
+    </script>
+</body>
+</html>
